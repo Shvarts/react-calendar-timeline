@@ -161,7 +161,6 @@
 .react-calendar-timeline .rct-vertical-lines .rct-vl {
   position: absolute;
   border-left: 1px solid #bbb;
-  background: #fff;
   z-index: 30; }
   .react-calendar-timeline .rct-vertical-lines .rct-vl.rct-vl-first {
     border-left-width: 2px; }
@@ -172,7 +171,6 @@
 .react-calendar-timeline .rct-horizontal-lines .rct-hl-odd {
   border-bottom: 1px solid #bbb;
   box-sizing: content-box;
-  position: absolute;
   z-index: 40; }
 
 .react-calendar-timeline .rct-horizontal-lines .rct-hl-odd {
