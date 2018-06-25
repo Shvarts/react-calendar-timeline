@@ -17,7 +17,7 @@ function deploy_branch() {
 
   git add --all
   git commit -m "deploy($branch_name): $TRAVIS_COMMIT"
-  git push -qf "https://$GH_TOKEN@githZub.com/$TRAVIS_REPO_SLUG.git"
+  git push -qf "https://$GH_TOKEN@github.com/$TRAVIS_REPO_SLUG.git"
 
   cd ..
 
