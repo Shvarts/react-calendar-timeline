@@ -11,7 +11,7 @@ function deploy_branch() {
   git clone --depth=1 --branch "$branch_name" "https://github.com/FoothillSolutions/react-calendar-timeline" ./$branch_name
 
   rm -rf ./$branch_name/*
-  cp -rf ./package.json ./README.md ./LICENSE ./$branch_name/* ./$branch_name
+  cp -rf ./package.json ./README.md ./LICENSE ./lib ./$branch_name
 
   cd ./$branch_name
 
@@ -20,7 +20,7 @@ function deploy_branch() {
   git push -qf "https://$GH_TOKEN@github.com/$TRAVIS_REPO_SLUG.git"
 
   cd ..
-  
+
 }
 
 deploy_branch "dist"
