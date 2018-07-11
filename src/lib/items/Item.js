@@ -5,7 +5,7 @@ import moment from 'moment'
 
 import { _get, deepObjectCompare } from '../utility/generic'
 import { composeEvents } from '../utility/events'
-
+import { defaultItemRenderer } from './defaultItemRendere'
 export default class Item extends Component {
   // removed prop type check for SPEED!
   // they are coming from a trusted component anyway
@@ -15,7 +15,6 @@ export default class Item extends Component {
     canvasTimeEnd: PropTypes.number.isRequired,
     canvasWidth: PropTypes.number.isRequired,
     order: PropTypes.number,
-    minimumWidthForItemContentVisibility: PropTypes.number.isRequired,
 
     dragSnap: PropTypes.number,
     minResizeWidth: PropTypes.number,
@@ -49,40 +48,7 @@ export default class Item extends Component {
 
   static defaultProps = {
     selected: false,
-    itemRenderer: ({
-      item,
-      timelineContext,
-      itemContext,
-      getItemProps,
-      getResizeProps,
-    }) => {
-      const { left: leftResizeProps, right: rightResizeProps } = getResizeProps()
-      return (
-        <div
-          {...getItemProps(item.itemProps) }
-        >
-          {itemContext.useResizeHandle && itemContext.showInnerContentsRender ? (
-            <div {...leftResizeProps} />
-          ) : (
-              ''
-            )}
-
-          {itemContext.showInnerContentsRender && <div
-            className="rct-item-content"
-            style={{maxHeight: `${itemContext.dimensions.height}`}}
-          >
-            {itemContext.title}
-          </div>}
-
-
-          {itemContext.useResizeHandle && itemContext.showInnerContentsRender ? (
-            <div {...rightResizeProps} />
-          ) : (
-              ''
-            )}
-        </div>
-      )
-    }
+    itemRenderer: defaultItemRenderer
   }
 
   static contextTypes = {
@@ -133,9 +99,7 @@ export default class Item extends Component {
       nextProps.canMove !== this.props.canMove ||
       nextProps.canResizeLeft !== this.props.canResizeLeft ||
       nextProps.canResizeRight !== this.props.canResizeRight ||
-      nextProps.dimensions !== this.props.dimensions ||
-      nextProps.minimumWidthForItemContentVisibility !==
-      this.props.minimumWidthForItemContentVisibility
+      nextProps.dimensions !== this.props.dimensions
     return shouldUpdate
   }
 
@@ -158,7 +122,7 @@ export default class Item extends Component {
     const { dragSnap } = this.props
     if (dragSnap) {
       const offset = considerOffset ? moment().utcOffset() * 60 * 1000 : 0
-      return Math.round(dragTime / dragSnap) * dragSnap - offset % dragSnap
+      return Math.round(dragTime / dragSnap) * dragSnap - (offset % dragSnap)
     } else {
       return dragTime
     }
@@ -526,56 +490,131 @@ export default class Item extends Component {
   getDragLeftRef = el => (this.dragLeft = el)
   getDragRightRef = el => (this.dragRight = el)
 
-
   getItemProps = (props = {}) => {
     //TODO: maybe shouldnt include all of these classes
     const classNames =
       'rct-item' +
-      (this.props.selected ? ' selected' : '') +
-      (this.canMove(this.props) ? ' can-move' : '') +
-      (this.canResizeLeft(this.props) || this.canResizeRight(this.props)
-        ? ' can-resize'
-        : '') +
-      (this.canResizeLeft(this.props) ? ' can-resize-left' : '') +
-      (this.canResizeRight(this.props) ? ' can-resize-right' : '') +
       (this.props.item.className ? ` ${this.props.item.className}` : '')
 
+    return {
+      key: this.itemId,
+      ref: this.getItemRef,
+      className: classNames + ` ${props.className ? props.className : ''}`,
+      onMouseDown: composeEvents(this.onMouseDown, props.onMouseDown),
+      onMouseUp: composeEvents(this.onMouseUp, props.onMouseUp),
+      onTouchStart: composeEvents(this.onTouchStart, props.onTouchStart),
+      onTouchEnd: composeEvents(this.onTouchEnd, props.onTouchEnd),
+      onDoubleClick: composeEvents(this.handleDoubleClick, props.onDoubleClick),
+      onContextMenu: composeEvents(this.handleContextMenu, props.onContextMenu),
+      style: Object.assign({}, this.getItemStyle(props))
+    }
+  }
+  
+
+  getResizeProps = (props = {}) => {
+
+    const leftResizeStyle = {
+      position: "absolute",
+      width: 24,
+      maxWidth: "20%",
+      minWidth: 2,
+      height: "100%",
+      top: 0,
+      left: 0,
+      cursor: "pointer",
+      zIndex: 88,
+    }
+
+
+    const rightResizeStyle = {
+      position: "absolute",
+      width: 24,
+      maxWidth: "20%",
+      minWidth: 2,
+      height: "100%",
+      top: 0,
+      right: 0,
+      cursor: "pointer",
+      zIndex: 88,
+    }
+
+
+
+    return {
+      left: {
+        ref: this.getDragLeftRef,
+        style: Object.assign({}, leftResizeStyle, props.leftStyle)
+      },
+      right: {
+        ref: this.getDragRightRef,
+        style: Object.assign({}, rightResizeStyle, props.rightStyle)
+      }
+    }
+  }
+
+  getItemStyle(props) {
     const dimensions = this.props.dimensions
 
-    
-    const style = {
+    const baseStyles = {
+      position: 'absolute',
+      boxSizing: 'border-box',
       left: `${dimensions.left}px`,
       top: `${dimensions.top}px`,
       width: `${dimensions.width}px`,
       height: `${dimensions.height}px`,
       lineHeight: `${dimensions.height}px`
     }
-
-    return {
-      key: this.itemId,
-      ref: this.getItemRef,
-      className: classNames + ` ${props.className? props.className : ''}`,
-      onMouseDown: composeEvents(this.onMouseDown, props.onMouseDown),
-      onMouseUp: composeEvents(this.onMouseUp, props.onMouseUp),
-      onTouchStart: composeEvents(this.onTouchStart, props.onTouchStart),
-      onTouchEnd: composeEvents(this.onTouchEnd, props.onTouchEnd),
-      onDoubleClick: composeEvents(this.handleDoubleClick, props.onDoubleClick),
-      onContextMenu: composeEvents(this.handleContextMenu, props.composeEvents),
-      style: Object.assign({}, props.style, style),
+    const overridableStyles = {
+      fontSize: 12,
+      color: 'white',
+      cursor: 'pointer',
+      background: '#2196f3',
+      border: '1px solid #1a6fb3',
+      zIndex: 80
     }
-  }
-
-  getResizeProps = (props = {}) => {
-    return {
-      left: {
-        ref: this.getDragLeftRef,
-        className: `rct-drag-left ${props.classNameLeft}`
-      },
-      right: {
-        ref: this.getDragRightRef,
-        className: `rct-drag-right ${props.classNameRight}`
-      }
+    const selectedStyle = {
+      background: '#ffc107',
+      border: '1px solid #ff9800',
+      zIndex: 82
     }
+    const selectedAndCanMove = {
+      cursor: 'move'
+    }
+    const selectedAndCanResizeLeft = {
+      borderLeftWidth: 3
+    }
+    const selectedAndCanResizeLeftAndDragLeft = {
+      cursor: 'w-resize'
+    }
+    const selectedAndCanResizeRight = {
+      borderRightWidth: 3
+    }
+    const selectedAndCanResizeRightAndDragRight = {
+      cursor: 'e-resize'
+    }
+    const finalStyle = Object.assign(
+      {},
+      overridableStyles,
+      this.props.selected ? selectedStyle : {},
+      this.props.selected & this.canMove(this.props) ? selectedAndCanMove : {},
+      this.props.selected & this.canResizeLeft(this.props)
+        ? selectedAndCanResizeLeft
+        : {},
+      this.props.selected & this.canResizeLeft(this.props) & this.state.dragging
+        ? selectedAndCanResizeLeftAndDragLeft
+        : {},
+      this.props.selected & this.canResizeRight(this.props)
+        ? selectedAndCanResizeRight
+        : {},
+      this.props.selected &
+      this.canResizeRight(this.props) &
+      this.state.dragging
+        ? selectedAndCanResizeRightAndDragRight
+        : {},
+      props.style,
+      baseStyles
+    )
+    return finalStyle
   }
 
   render() {
@@ -600,8 +639,7 @@ export default class Item extends Component {
       resizeEdge: this.state.resizeEdge,
       resizeStart: this.state.resizeStart,
       resizeTime: this.state.resizeTime,
-      showInnerContentsRender: this.props.dimensions.width > this.props.minimumWidthForItemContentVisibility,
-
+      width: this.props.dimensions.width,
     }
 
     return this.props.itemRenderer({
@@ -609,7 +647,7 @@ export default class Item extends Component {
       timelineContext,
       itemContext,
       getItemProps: this.getItemProps,
-      getResizeProps: this.getResizeProps,
+      getResizeProps: this.getResizeProps
     })
   }
 }
