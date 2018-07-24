@@ -1198,7 +1198,6 @@ export default class ReactCalendarTimeline extends Component {
                   ref={el => (this.canvasComponent = el)}
                   style={canvasComponentStyle}
                 >
-                  <MarkerCanvas />
                   {this.items(
                     canvasTimeStart,
                     zoom,
@@ -1234,6 +1233,7 @@ export default class ReactCalendarTimeline extends Component {
                     minUnit,
                     timeSteps
                   )}
+                  <MarkerCanvas />
                 </div>
               </ScrollElement>
               {rightSidebarWidth > 0
