@@ -9,6 +9,11 @@ and this project adheres (more or less) to [Semantic Versioning](http://semver.o
 
 ### Breaking
 * rework item renderer to render the whole item using render prop and prop getters
+### 0.18.0
+
+### Fixed
+
+* Timeline now respects changes to `headerLabelFormats` and `subHeaderLabelFormats` - #362
 
 ### Added
 
@@ -37,7 +42,10 @@ from 'react-calendar-timeline'
 + </Timeline>
 ```
 
+### 0.17.3
 
+### Added
+* fix issue with single row header - #359
 
 ### 0.17.2
 
