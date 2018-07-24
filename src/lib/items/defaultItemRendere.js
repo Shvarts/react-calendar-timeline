@@ -16,14 +16,12 @@ export const defaultItemRenderer = ({
         ''
       )}
 
-      {itemContext.showInnerContentsRender && (
         <div
           className="rct-item-content"
           style={{ maxHeight: `${itemContext.dimensions.height}` }}
         >
           {itemContext.title}
         </div>
-      )}
 
       {itemContext.useResizeHandle && itemContext.showInnerContentsRender ? (
         <div {...rightResizeProps} />
