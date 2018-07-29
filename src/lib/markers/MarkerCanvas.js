@@ -11,7 +11,6 @@ const staticStyles = {
   right: 0,
   top: 0,
   bottom: 0,
-  zIndex: 70,
 }
 
 /**
@@ -20,7 +19,8 @@ const staticStyles = {
  */
 class MarkerCanvas extends React.Component {
   static propTypes = {
-    getDateFromLeftOffsetPosition: PropTypes.func.isRequired
+    getDateFromLeftOffsetPosition: PropTypes.func.isRequired,
+    children: PropTypes.element
   }
 
   handleMouseMove = evt => {
@@ -72,6 +72,7 @@ class MarkerCanvas extends React.Component {
           ref={el => (this.containerEl = el)}
         >
           <TimelineMarkersRenderer />
+          {this.props.children}
         </div>
       </MarkerCanvasProvider>
     )

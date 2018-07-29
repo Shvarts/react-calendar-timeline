@@ -9,6 +9,18 @@ and this project adheres (more or less) to [Semantic Versioning](http://semver.o
 
 ### Breaking
 * rework item renderer to render the whole item using render prop and prop getters
+### Fixed
+
+* `onCanvasClick` not fired - #383
+* cursor marker disappear while hovering over item - #378
+
+### 0.18.1
+
+### Fixed
+
+* Date passed to CursorMarker child is wrong - #379
+* groupRenderer doesnt work for right sidebar - #377
+
 ### 0.18.0
 
 ### Fixed
