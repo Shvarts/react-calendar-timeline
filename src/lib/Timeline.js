@@ -1108,7 +1108,6 @@ export default class ReactCalendarTimeline extends Component {
       minUnit: minUnit,
       timeSteps: timeSteps
     }
-
     return React.Children.map(childArray, child =>
       React.cloneElement(child, childProps)
     )
