@@ -31,17 +31,16 @@
 
 .react-calendar-timeline .rct-header-container {
   z-index: 90;
-  display: flex; }
+  display: flex;
+  overflow: hidden; }
   .react-calendar-timeline .rct-header-container.header-sticky {
     position: sticky;
     position: -webkit-sticky; }
 
 .react-calendar-timeline .rct-sidebar {
-  overflow: hidden;
   white-space: normal;
   display: inline-block;
   vertical-align: top;
-  position: relative;
   box-sizing: border-box;
   border-right: 1px solid #bbb; }
   .react-calendar-timeline .rct-sidebar.rct-sidebar-right {

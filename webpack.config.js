@@ -1,6 +1,6 @@
 const path = require('path')
 
-const port = process.env.PORT || 8888
+const port = process.env.PORT || 8080
 
 const config = {
   devtool: 'cheap-eval-source-map',
