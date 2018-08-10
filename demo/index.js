@@ -3,6 +3,11 @@ import ReactDOM from 'react-dom'
 import 'react-calendar-timeline-css'
 import App from './app'
 
+if (process.env.NODE_ENV !== 'production') {
+  const {whyDidYouUpdate} = require('why-did-you-update');
+  whyDidYouUpdate(React);
+}
+
 const render = AppToRender => {
   ReactDOM.render(<AppToRender />, document.getElementById('root'))
 }

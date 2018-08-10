@@ -933,6 +933,11 @@ export default class ReactCalendarTimeline extends Component {
     )
   }
 
+  getScrollElementRef = el => {
+    this.props.scrollRef(el)
+    this.scrollComponent = el
+  }
+
   render() {
     const {
       items,
@@ -1010,10 +1015,7 @@ export default class ReactCalendarTimeline extends Component {
               <div style={outerComponentStyle} className="rct-outer">
                 {sidebarWidth > 0 ? this.sidebar(height, groupHeights) : null}
                 <ScrollElement
-                  scrollRef={el => {
-                    this.props.scrollRef(el)
-                    this.scrollComponent = el
-                  }}
+                  scrollRef={this.getScrollElementRef}
                   width={width}
                   height={height}
                   onZoom={this.changeZoom}
