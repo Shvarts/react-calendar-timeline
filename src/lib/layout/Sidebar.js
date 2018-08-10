@@ -9,7 +9,6 @@ export default class Sidebar extends Component {
     width: PropTypes.number.isRequired,
     height: PropTypes.number.isRequired,
     groupHeights: PropTypes.array.isRequired,
-    headerHeight: PropTypes.number.isRequired,
     keys: PropTypes.object.isRequired,
     groupRenderer: PropTypes.func,
     isRightSidebar: PropTypes.bool,
@@ -25,7 +24,6 @@ export default class Sidebar extends Component {
       nextProps.width === this.props.width &&
       nextProps.groupHeights === this.props.groupHeights &&
       nextProps.height === this.props.height &&
-      nextProps.headerHeight === this.props.headerHeight &&
       nextProps.content === this.props.content
     )
   }
@@ -42,13 +40,13 @@ export default class Sidebar extends Component {
   }
 
   render() {
-    const { width, groupHeights, height, isRightSidebar, headerHeight } = this.props
+    const { width, groupHeights, height, isRightSidebar } = this.props
 
     const { groupIdKey, groupTitleKey, groupRightTitleKey } = this.props.keys
 
     const sidebarStyle = {
       width: `${width}px`,
-      height: `${height + headerHeight}px`
+      height: `${height}px`
     }
 
     const groupsStyle = {
@@ -79,24 +77,12 @@ export default class Sidebar extends Component {
       )
     })
 
-    const headerStyle = {
-      width: width,
-      height: this.props.headerHeight,
-      top: this.props.stickyHeader ? this.props.stickyOffset || 0 : 0
-    }
-    const headerClass = this.props.stickyHeader ? 'header-sticky' : ''
 
     return (
       <div
         className={'rct-sidebar' + (isRightSidebar ? ' rct-sidebar-right' : '')}
         style={sidebarStyle}
       >
-        <div
-          className={`rct-sidebar-header ${headerClass}`}
-          style={headerStyle}
-        >
-          {this.props.content}
-        </div>
         <div style={groupsStyle}>{groupLines}</div>
       </div>
     )
