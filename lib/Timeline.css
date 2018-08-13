@@ -38,9 +38,11 @@
     position: -webkit-sticky; }
 
 .react-calendar-timeline .rct-sidebar {
+  overflow: hidden;
   white-space: normal;
   display: inline-block;
   vertical-align: top;
+  position: relative;
   box-sizing: border-box;
   border-right: 1px solid #bbb; }
   .react-calendar-timeline .rct-sidebar.rct-sidebar-right {

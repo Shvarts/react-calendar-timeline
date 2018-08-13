@@ -429,7 +429,7 @@ export default class ReactCalendarTimeline extends Component {
     } = this.container.getBoundingClientRect()
 
     let width = containerWidth - props.sidebarWidth - props.rightSidebarWidth
-    const { height: headerHeight } = this.headerRef.getBoundingClientRect()
+    const { height: headerHeight } = this.scrollHeaderRef.getBoundingClientRect()
 
     const { dimensionItems, height, groupHeights, groupTops } = stackItems(
       props.items,
@@ -456,7 +456,7 @@ export default class ReactCalendarTimeline extends Component {
     })
 
     this.scrollComponent.scrollLeft = width
-    this.headerRef.scrollLeft = width
+    this.scrollHeaderRef.scrollLeft = width
   }
 
   onScroll = scrollX => {
@@ -471,7 +471,7 @@ export default class ReactCalendarTimeline extends Component {
       newScrollX -= width
     }
 
-    this.headerRef.scrollLeft = newScrollX
+    this.scrollHeaderRef.scrollLeft = newScrollX
     this.scrollComponent.scrollLeft = newScrollX
 
     const canvasTimeStart = this.state.canvasTimeStart
@@ -809,7 +809,7 @@ export default class ReactCalendarTimeline extends Component {
   }
 
   handleHeaderRef = el => {
-    this.headerRef = el
+    this.scrollHeaderRef = el
     this.props.headerRef(el)
   }
 
