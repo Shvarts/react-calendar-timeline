@@ -12,9 +12,6 @@ export default class Sidebar extends Component {
     keys: PropTypes.object.isRequired,
     groupRenderer: PropTypes.func,
     isRightSidebar: PropTypes.bool,
-    content: PropTypes.node,
-    stickyOffset: PropTypes.number,
-    stickyHeader: PropTypes.bool.isRequired,
   }
 
   shouldComponentUpdate(nextProps) {
@@ -76,7 +73,6 @@ export default class Sidebar extends Component {
         </div>
       )
     })
-
 
     return (
       <div

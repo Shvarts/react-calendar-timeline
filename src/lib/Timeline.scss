@@ -73,11 +73,11 @@ $weekend: rgba(250, 246, 225, 0.5);
   }
 
   .rct-sidebar {
-    // overflow: hidden;
+    overflow: hidden;
     white-space: normal; // was set to nowrap in .rct-outer
     display: inline-block;
     vertical-align: top;
-    // position: relative;
+    position: relative;
     box-sizing: border-box;
     border-right: $border-width solid $border-color;
 

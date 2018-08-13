@@ -417,8 +417,8 @@ export default class ReactCalendarTimeline extends Component {
       this.scrollComponent.scrollLeft = scrollLeft
     }
 
-    if (this.headerRef.scrollLeft !== scrollLeft) {
-      this.headerRef.scrollLeft = scrollLeft
+    if (this.scrollHeaderRef.scrollLeft !== scrollLeft) {
+      this.scrollHeaderRef.scrollLeft = scrollLeft
     }
   }
 
@@ -813,47 +813,36 @@ export default class ReactCalendarTimeline extends Component {
     this.props.headerRef(el)
   }
 
-  sidebar(height, groupHeights, headerHeight) {
+  sidebar(height, groupHeights) {
     const { sidebarWidth } = this.props
     return (
-      sidebarWidth != null &&
-      sidebarWidth > 0 && (
-        <Sidebar
-          groups={this.props.groups}
-          groupRenderer={this.props.groupRenderer}
-          keys={this.props.keys}
-          width={this.props.sidebarWidth}
-          groupHeights={groupHeights}
-          headerHeight={headerHeight}
-          height={height}
-          content={this.props.sidebarContent}
-          stickyHeader={this.props.stickyHeader}
-          stickyOffset={this.props.stickyOffset}
-        />
-      )
+      sidebarWidth && 
+      <Sidebar
+        groups={this.props.groups}
+        groupRenderer={this.props.groupRenderer}
+        keys={this.props.keys}
+        width={sidebarWidth}
+        groupHeights={groupHeights}
+        height={height}
+
+      />
     )
   }
 
-  rightSidebar(height, groupHeights, headerHeight) {
+  rightSidebar(height, groupHeights) {
     const { rightSidebarWidth } = this.props
-
     return (
-      rightSidebarWidth != null &&
-      rightSidebarWidth > 0 && (
-        <Sidebar
-          groups={this.props.groups}
-          keys={this.props.keys}
-          groupRenderer={this.props.groupRenderer}
-          isRightSidebar
-          width={this.props.rightSidebarWidth}
-          groupHeights={groupHeights}
-          headerHeight={headerHeight}
-          height={height}
-          content={this.props.rightSidebarContent}
-          stickyHeader={this.props.stickyHeader}
-          stickyOffset={this.props.stickyOffset}
-        />
-      )
+      rightSidebarWidth &&
+      <Sidebar
+        groups={this.props.groups}
+        keys={this.props.keys}
+        groupRenderer={this.props.groupRenderer}
+        isRightSidebar
+        width={rightSidebarWidth}
+        groupHeights={groupHeights}
+        height={height}
+
+      />
     )
   }
 
