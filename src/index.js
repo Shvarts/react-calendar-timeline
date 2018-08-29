@@ -1,4 +1,5 @@
 import Timeline from './lib/Timeline'
+import 'babel-polyfill'
 
 export {
   default as TimelineMarkers
