@@ -118,7 +118,7 @@ export default class Items extends Component {
       groupOrders
     )
     const sortedDimensionItems = keyBy(dimensionItems, 'id')
-
+      console.log(sortedDimensionItems)
     return (
       <div className="rct-items">
         {visibleItems

@@ -109,16 +109,20 @@ export default class App extends Component {
   }
 
   // this limits the timeline to -6 months ... +6 months
-  handleTimeChange = (visibleTimeStart, visibleTimeEnd, updateScrollCanvas) => {
-    if (visibleTimeStart < minTime && visibleTimeEnd > maxTime) {
-      updateScrollCanvas(minTime, maxTime)
-    } else if (visibleTimeStart < minTime) {
-      updateScrollCanvas(minTime, minTime + (visibleTimeEnd - visibleTimeStart))
-    } else if (visibleTimeEnd > maxTime) {
-      updateScrollCanvas(maxTime - (visibleTimeEnd - visibleTimeStart), maxTime)
-    } else {
-      updateScrollCanvas(visibleTimeStart, visibleTimeEnd)
-    }
+  // handleTimeChange = (visibleTimeStart, visibleTimeEnd, updateScrollCanvas) => {
+  //   if (visibleTimeStart < minTime && visibleTimeEnd > maxTime) {
+  //     updateScrollCanvas(minTime, maxTime)
+  //   } else if (visibleTimeStart < minTime) {
+  //     updateScrollCanvas(minTime, minTime + (visibleTimeEnd - visibleTimeStart))
+  //   } else if (visibleTimeEnd > maxTime) {
+  //     updateScrollCanvas(maxTime - (visibleTimeEnd - visibleTimeStart), maxTime)
+  //   } else {
+  //     updateScrollCanvas(visibleTimeStart, visibleTimeEnd)
+  //   }
+  // }
+
+  handleTimeChange = (visibleTimeStart, visibleTimeEnd,updateScrollCanvas) => { 
+    updateScrollCanvas(moment(this.state.defaultTimeStart).valueOf(), moment(this.state.defaultTimeEnd).valueOf()); 
   }
 
   moveResizeValidator = (action, item, time) => {
@@ -172,6 +176,7 @@ export default class App extends Component {
 
         defaultTimeStart={defaultTimeStart}
         defaultTimeEnd={defaultTimeEnd}
+        
         // itemRenderer={this.itemRenderer}
         // groupRenderer={this.groupRenderer}
 

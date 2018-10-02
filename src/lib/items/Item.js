@@ -127,6 +127,7 @@ export default class Item extends Component {
 
   getTimeRatio() {
     const { canvasTimeStart, canvasTimeEnd, canvasWidth } = this.props
+    
     return coordinateToTimeRatio(canvasTimeStart, canvasTimeEnd, canvasWidth)
   }
 
@@ -573,9 +574,10 @@ export default class Item extends Component {
   }
 
   render() {
-    if (typeof this.props.order === 'undefined' || this.props.order === null) {
-      return null
-    }
+    // console.log(this.props);
+    // if (typeof this.props.order === 'undefined' || this.props.order === null) {
+    //   return null
+    // }
 
     const timelineContext = this.context.getTimelineContext()
     const itemContext = {

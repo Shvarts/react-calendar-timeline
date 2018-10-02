@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import moment from 'moment'
-
 import Items from './items/Items'
 import InfoLabel from './layout/InfoLabel'
 import Sidebar from './layout/Sidebar'
@@ -9,6 +8,9 @@ import Columns from './columns/Columns'
 import GroupRows from './row/GroupRows'
 import ScrollElement from './scroll/ScrollElement'
 import MarkerCanvas from './markers/MarkerCanvas'
+// import { Collection } from 'react-virtualized';
+import { ScrollSync } from 'react-virtualized'
+// import {ScrollSync, ScrollSyncPane} from '../../node_modules/react-scroll-sync/src';
 
 import windowResizeDetector from '../resize-detector/window'
 
@@ -16,9 +18,11 @@ import {
   getMinUnit,
   stackItems,
   calculateScrollCanvas,
-  calculateTimeForXPosition
+  calculateTimeForXPosition,
+  getGroupOrders,
+  getVisibleItems
 } from './utility/calendar'
-import { _get, _length } from './utility/generic'
+import { _get, _length, keyBy } from './utility/generic';
 import {
   defaultKeys,
   defaultTimeSteps,
@@ -31,6 +35,17 @@ import { TimelineHeadersProvider } from './headers/HeadersContext'
 import TimelineHeaders from './headers/TimelineHeaders'
 import DateHeader from './headers/DateHeader'
 import SidebarHeader from './headers/SidebarHeader'
+import TestCollection from './TestCollection';
+
+const list = [
+  { name: 'Brian Vaughn', x: 13, y: 34, width: 123, height: 234 },
+  { name: 'Brian Vaughn', x: 136, y: 34, width: 123, height: 234 },
+  { name: 'Brian Vaughn', x: 149, y: 34, width: 123, height: 234 },
+  { name: 'Brian Vaughn', x: 164, y: 34, width: 123, height: 234 },
+  { name: 'Brian Vaughn', x: 177, y: 34, width: 123, height: 234 },
+  { name: 'Brian Vaughn', x: 190, y: 34, width: 123, height: 234 }
+  // And so on...
+];
 
 export default class ReactCalendarTimeline extends Component {
   static propTypes = {
@@ -299,7 +314,8 @@ export default class ReactCalendarTimeline extends Component {
       resizeTime: null,
       topOffset: 0,
       resizingItem: null,
-      resizingEdge: null
+      resizingEdge: null,
+      viewPortVisibleItems: this.props.items
     }
 
     const { dimensionItems, height, groupHeights, groupTops } = stackItems(
@@ -479,6 +495,9 @@ export default class ReactCalendarTimeline extends Component {
     const zoom = this.state.visibleTimeEnd - this.state.visibleTimeStart
 
     const visibleTimeStart = canvasTimeStart + (zoom * scrollX) / width
+    const canvasTimeEnd = zoom * 3 + canvasTimeStart
+
+    // this.getViewPortVisibleItems(canvasTimeStart, canvasTimeEnd)
 
     if (
       this.state.visibleTimeStart !== visibleTimeStart ||
@@ -491,6 +510,20 @@ export default class ReactCalendarTimeline extends Component {
       )
     }
   }
+
+  // getViewPortVisibleItems = (canvasTimeStart, canvasTimeEnd) => {
+  //   const { keys, groups, items } = this.props
+  //   const groupOrders = getGroupOrders(groups, keys)
+  //   const visibleItems = getVisibleItems(items, canvasTimeStart, canvasTimeEnd, keys)
+  //   const sortedDimensionItems = keyBy(this.state.dimensionItems, 'id')
+
+  //   const viewPortItems = visibleItems.filter(item => {
+  //     const dimensions = item && sortedDimensionItems[_get(item, 'id')] && sortedDimensionItems[_get(item, 'id')].dimensions
+  //     return dimensions && dimensions.top > window.scrollY && dimensions.top < window.scrollY + window.innerHeight; 
+  //   });
+
+  //   this.setState({ viewPortItems: viewPortItems })
+  // }
 
   // called when the visible time changes
   updateScrollCanvas = (
@@ -760,16 +793,19 @@ export default class ReactCalendarTimeline extends Component {
     minUnit,
     dimensionItems,
     groupHeights,
-    groupTops
+    groupTops,
+    width,
+    height
   ) {
+
     return (
-      <Items
+      <TestCollection
         canvasTimeStart={canvasTimeStart}
         canvasTimeEnd={canvasTimeEnd}
         canvasWidth={canvasWidth}
         dimensionItems={dimensionItems}
         groupTops={groupTops}
-        items={this.props.items}
+        items={this.props.items} //this.state.viewPortItems || 
         groups={this.props.groups}
         keys={this.props.keys}
         selectedItem={this.state.selectedItem}
@@ -791,6 +827,8 @@ export default class ReactCalendarTimeline extends Component {
         itemResized={this.resizedItem}
         itemRenderer={this.props.itemRenderer}
         selected={this.props.selected}
+        width={width}
+        height={height}
       />
     )
   }
@@ -988,6 +1026,75 @@ export default class ReactCalendarTimeline extends Component {
       height: `${height}px`
     }
 
+    const cellRenderer = ({ index, key, style }) => {
+      return (
+        <div
+          key={key}
+          style={style}
+        >
+          {list[index].name}
+        </div>
+      )
+    }
+    
+    const cellSizeAndPositionGetter = ({ index }) => {
+      const datum = list[index]
+    
+      return {
+        height: datum.height,
+        width: datum.width,
+        x: datum.x,
+        y: datum.y
+      }
+    }  
+
+    // return (
+    //   <Collection
+    //     cellCount={list.length}
+    //     cellRenderer={cellRenderer}
+    //     cellSizeAndPositionGetter={cellSizeAndPositionGetter}
+    //     height={300}
+    //     width={300}
+    //   />
+  //   <MarkerCanvas>
+  //   {this.items(
+  //     canvasTimeStart,
+  //     zoom,
+  //     canvasTimeEnd,
+  //     canvasWidth,
+  //     minUnit,
+  //     dimensionItems,
+  //     groupHeights,
+  //     groupTops
+  //   )}
+  //   {this.columns(
+  //     canvasTimeStart,
+  //     canvasTimeEnd,
+  //     canvasWidth,
+  //     minUnit,
+  //     timeSteps,
+  //     height,
+  //     headerHeight
+  //   )}
+  //   {this.rows(canvasWidth, groupHeights, groups)}
+  //   {this.infoLabel()}
+  //   {this.childrenWithProps(
+  //     canvasTimeStart,
+  //     canvasTimeEnd,
+  //     canvasWidth,
+  //     dimensionItems,
+  //     groupHeights,
+  //     groupTops,
+  //     height,
+  //     headerHeight,
+  //     visibleTimeStart,
+  //     visibleTimeEnd,
+  //     minUnit,
+  //     timeSteps
+  //   )}
+  // </MarkerCanvas>
+    // )
+
     return (
       <TimelineStateProvider
         visibleTimeStart={visibleTimeStart}
@@ -1010,58 +1117,71 @@ export default class ReactCalendarTimeline extends Component {
               style={this.props.style}
               ref={el => (this.container = el)}
               className="react-calendar-timeline"
+              
             >
               {this.renderHeaders()}
-              <div style={outerComponentStyle} className="rct-outer">
+              <div style={outerComponentStyle} className="rct-outer" >
                 {sidebarWidth > 0 ? this.sidebar(height, groupHeights) : null}
-                <ScrollElement
-                  scrollRef={this.getScrollElementRef}
-                  width={width}
-                  height={height}
-                  onZoom={this.changeZoom}
-                  onWheelZoom={this.handleWheelZoom}
-                  traditionalZoom={traditionalZoom}
-                  onScroll={this.onScroll}
-                  isInteractingWithItem={isInteractingWithItem}
-                >
-                  <MarkerCanvas>
-                    {this.items(
-                      canvasTimeStart,
-                      zoom,
-                      canvasTimeEnd,
-                      canvasWidth,
-                      minUnit,
-                      dimensionItems,
-                      groupHeights,
-                      groupTops
-                    )}
-                    {this.columns(
-                      canvasTimeStart,
-                      canvasTimeEnd,
-                      canvasWidth,
-                      minUnit,
-                      timeSteps,
-                      height,
-                      headerHeight
-                    )}
-                    {this.rows(canvasWidth, groupHeights, groups)}
-                    {this.infoLabel()}
-                    {this.childrenWithProps(
-                      canvasTimeStart,
-                      canvasTimeEnd,
-                      canvasWidth,
-                      dimensionItems,
-                      groupHeights,
-                      groupTops,
-                      height,
-                      headerHeight,
-                      visibleTimeStart,
-                      visibleTimeEnd,
-                      minUnit,
-                      timeSteps
-                    )}
-                  </MarkerCanvas>
-                </ScrollElement>
+
+                        <ScrollElement
+                          scrollRef={this.getScrollElementRef}
+                          width={width}
+                          height={height}
+                          onZoom={this.changeZoom}
+                          onWheelZoom={this.handleWheelZoom}
+                          traditionalZoom={traditionalZoom}
+                          onScroll={this.onScroll}
+                          isInteractingWithItem={isInteractingWithItem}
+                        >
+                        {this.items(
+                            canvasTimeStart,
+                            zoom,
+                            canvasTimeEnd,
+                            canvasWidth,
+                            minUnit,
+                            dimensionItems,
+                            groupHeights,
+                            groupTops,
+                            width,
+                            height
+                          )}
+                          
+                          <MarkerCanvas>
+                            {this.columns(
+                              canvasTimeStart,
+                              canvasTimeEnd,
+                              canvasWidth,
+                              minUnit,
+                              timeSteps,
+                              height,
+                              headerHeight
+                            )}
+                            {this.rows(canvasWidth, groupHeights, groups)}
+
+                            {this.infoLabel()}
+                            {this.childrenWithProps(
+                              canvasTimeStart,
+                              canvasTimeEnd,
+                              canvasWidth,
+                              dimensionItems,
+                              groupHeights,
+                              groupTops,
+                              height,
+                              headerHeight,
+                              visibleTimeStart,
+                              visibleTimeEnd,
+                              minUnit,
+                              timeSteps
+                            )}
+
+                          </MarkerCanvas>
+
+                        </ScrollElement>
+                
+                
+                
+
+
                 {rightSidebarWidth > 0
                   ? this.rightSidebar(height, groupHeights)
                   : null}
@@ -1073,3 +1193,4 @@ export default class ReactCalendarTimeline extends Component {
     )
   }
 }
+
