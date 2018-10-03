@@ -35,7 +35,7 @@ import { TimelineHeadersProvider } from './headers/HeadersContext'
 import TimelineHeaders from './headers/TimelineHeaders'
 import DateHeader from './headers/DateHeader'
 import SidebarHeader from './headers/SidebarHeader'
-import TestCollection from './TestCollection';
+import ItemsCollection from './items/ItemsCollection';
 
 const list = [
   { name: 'Brian Vaughn', x: 13, y: 34, width: 123, height: 234 },
@@ -799,7 +799,7 @@ export default class ReactCalendarTimeline extends Component {
   ) {
 
     return (
-      <TestCollection
+      <ItemsCollection
         canvasTimeStart={canvasTimeStart}
         canvasTimeEnd={canvasTimeEnd}
         canvasWidth={canvasWidth}
@@ -1026,75 +1026,6 @@ export default class ReactCalendarTimeline extends Component {
       height: `${height}px`
     }
 
-    const cellRenderer = ({ index, key, style }) => {
-      return (
-        <div
-          key={key}
-          style={style}
-        >
-          {list[index].name}
-        </div>
-      )
-    }
-    
-    const cellSizeAndPositionGetter = ({ index }) => {
-      const datum = list[index]
-    
-      return {
-        height: datum.height,
-        width: datum.width,
-        x: datum.x,
-        y: datum.y
-      }
-    }  
-
-    // return (
-    //   <Collection
-    //     cellCount={list.length}
-    //     cellRenderer={cellRenderer}
-    //     cellSizeAndPositionGetter={cellSizeAndPositionGetter}
-    //     height={300}
-    //     width={300}
-    //   />
-  //   <MarkerCanvas>
-  //   {this.items(
-  //     canvasTimeStart,
-  //     zoom,
-  //     canvasTimeEnd,
-  //     canvasWidth,
-  //     minUnit,
-  //     dimensionItems,
-  //     groupHeights,
-  //     groupTops
-  //   )}
-  //   {this.columns(
-  //     canvasTimeStart,
-  //     canvasTimeEnd,
-  //     canvasWidth,
-  //     minUnit,
-  //     timeSteps,
-  //     height,
-  //     headerHeight
-  //   )}
-  //   {this.rows(canvasWidth, groupHeights, groups)}
-  //   {this.infoLabel()}
-  //   {this.childrenWithProps(
-  //     canvasTimeStart,
-  //     canvasTimeEnd,
-  //     canvasWidth,
-  //     dimensionItems,
-  //     groupHeights,
-  //     groupTops,
-  //     height,
-  //     headerHeight,
-  //     visibleTimeStart,
-  //     visibleTimeEnd,
-  //     minUnit,
-  //     timeSteps
-  //   )}
-  // </MarkerCanvas>
-    // )
-
     return (
       <TimelineStateProvider
         visibleTimeStart={visibleTimeStart}
@@ -1117,7 +1048,6 @@ export default class ReactCalendarTimeline extends Component {
               style={this.props.style}
               ref={el => (this.container = el)}
               className="react-calendar-timeline"
-              
             >
               {this.renderHeaders()}
               <div style={outerComponentStyle} className="rct-outer" >
@@ -1133,7 +1063,8 @@ export default class ReactCalendarTimeline extends Component {
                           onScroll={this.onScroll}
                           isInteractingWithItem={isInteractingWithItem}
                         >
-                        {this.items(
+                        
+                          {this.items(
                             canvasTimeStart,
                             zoom,
                             canvasTimeEnd,
@@ -1145,7 +1076,7 @@ export default class ReactCalendarTimeline extends Component {
                             width,
                             height
                           )}
-                          
+                                
                           <MarkerCanvas>
                             {this.columns(
                               canvasTimeStart,
@@ -1173,15 +1104,8 @@ export default class ReactCalendarTimeline extends Component {
                               minUnit,
                               timeSteps
                             )}
-
                           </MarkerCanvas>
-
                         </ScrollElement>
-                
-                
-                
-
-
                 {rightSidebarWidth > 0
                   ? this.rightSidebar(height, groupHeights)
                   : null}

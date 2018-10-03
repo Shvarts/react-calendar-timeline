@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Collection } from 'react-virtualized';
-import { _get, arraysEqual, keyBy } from './utility/generic';
-import Item from './items/Item'
-import { getGroupOrders, getVisibleItems } from './utility/calendar'
+import { _get, arraysEqual, keyBy } from '../utility/generic';
+import Item from './Item'
+import { getGroupOrders, getVisibleItems } from '../utility/calendar'
 
 const canResizeLeft = (item, canResize) => {
     const value =
@@ -17,7 +17,7 @@ const canResizeRight = (item, canResize) => {
     return value === 'right' || value === 'both' || value === true
 }
 
-export default class TestCollection extends Component {  
+export default class ItemsCollection extends Component {  
     static propTypes = {
         groups: PropTypes.oneOfType([PropTypes.array, PropTypes.object]).isRequired,
         items: PropTypes.oneOfType([PropTypes.array, PropTypes.object]).isRequired,
@@ -137,17 +137,6 @@ export default class TestCollection extends Component {
             const item = visibleItems[index];
         
             return (
-                // <div
-                //     key={key}
-                //     style={style}
-                // >
-                //     {dimensionItems[index].id}
-                // order={groupOrders[_get(item, itemGroupKey)]}
-                // </div>    
-                // <div
-                //     key={key}
-                //     style={style}
-                // >
                 item && sortedDimensionItems[_get(item, itemIdKey)] &&
                     <Item
                         key={key}
@@ -194,55 +183,7 @@ export default class TestCollection extends Component {
                             onSelect={this.props.itemSelect}
                             itemRenderer={this.props.itemRenderer}
                         />
-                    // </div>
                 )
-
-                // <Item
-                        
-                //         key={key}
-                //         style={style}
-                //         item={item}
-                //         keys={this.props.keys}
-                        // order={groupOrders[_get(item, itemGroupKey)]}
-                        // dimensions={
-                        // sortedDimensionItems[_get(item, itemIdKey)].dimensions
-                        // }
-                        // selected={this.isSelected(item, itemIdKey)}
-                        // canChangeGroup={
-                        // _get(item, 'canChangeGroup') !== undefined
-                        //     ? _get(item, 'canChangeGroup')
-                        //     : this.props.canChangeGroup
-                        // }
-                        // canMove={
-                        // _get(item, 'canMove') !== undefined
-                        //     ? _get(item, 'canMove')
-                        //     : this.props.canMove
-                        // }
-                        // canResizeLeft={canResizeLeft(item, this.props.canResize)}
-                        // canResizeRight={canResizeRight(item, this.props.canResize)}
-                        // canSelect={
-                        // _get(item, 'canSelect') !== undefined
-                        //     ? _get(item, 'canSelect')
-                        //     : this.props.canSelect
-                        // }
-                        // useResizeHandle={this.props.useResizeHandle}
-                        // topOffset={this.props.topOffset}
-                        // groupTops={this.props.groupTops}
-                        // canvasTimeStart={this.props.canvasTimeStart}
-                        // canvasTimeEnd={this.props.canvasTimeEnd}
-                        // canvasWidth={this.props.canvasWidth}
-                        // dragSnap={this.props.dragSnap}
-                        // minResizeWidth={this.props.minResizeWidth}
-                        // onResizing={this.props.itemResizing}
-                        // onResized={this.props.itemResized}
-                        // moveResizeValidator={this.props.moveResizeValidator}
-                        // onDrag={this.props.itemDrag}
-                        // onDrop={this.props.itemDrop}
-                        // onItemDoubleClick={this.props.onItemDoubleClick}
-                        // onContextMenu={this.props.onItemContextMenu}
-                        // onSelect={this.props.itemSelect}
-                        // itemRenderer={this.props.itemRenderer}
-                //     />
         }
         
         const cellSizeAndPositionGetter = ({ index }) => {
@@ -256,22 +197,6 @@ export default class TestCollection extends Component {
             }
         }  
 
-        const onScrollFunction = ({ clientHeight, clientWidth, scrollHeight, scrollLeft, scrollTop, scrollWidth }) => {
-            // console.log('ON_SCROLL');
-            // console.log(clientHeight);
-            // console.log(clientWidth);
-            // console.log(scrollHeight);
-            // console.log(scrollLeft);
-            // console.log(scrollTop);
-            // console.log(scrollWidth);
-            // let scrollElement = document.getElementById('rct-scroll-id');
-            // if (scrollElement && scrollElement.offsetTop) {
-            //     scrollElement.scrollTo(0, 1000);
-            // }
-            //                 style={{position:"absolute", top:"100px", left: "100px", 'z-index': '100'}}
-
-        }
-
         return (
             <Collection
                 cellCount={dimensionItems.length}
@@ -281,7 +206,6 @@ export default class TestCollection extends Component {
                 width={canvasWidth}
                 horizontalOverscanSize={10}
                 verticalOverscanSize={1}
-                onScroll={onScrollFunction}
             />
         )
     }

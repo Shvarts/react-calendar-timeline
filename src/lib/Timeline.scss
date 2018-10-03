@@ -39,6 +39,10 @@ $weekend: rgba(250, 246, 225, 0.5);
     overflow-y: hidden;
     -ms-touch-action: none;
     touch-action: none;
+
+    .ReactVirtualized__Collection {
+      z-index: 10;
+    }
   }
 
   .rct-item {
