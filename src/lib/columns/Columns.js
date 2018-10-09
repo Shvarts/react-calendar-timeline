@@ -1,44 +1,15 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-
 import { iterateTimes } from '../utility/calendar'
 
-export default class Columns extends Component {
-  static propTypes = {
-    canvasTimeStart: PropTypes.number.isRequired,
-    canvasTimeEnd: PropTypes.number.isRequired,
-    canvasWidth: PropTypes.number.isRequired,
-    lineCount: PropTypes.number.isRequired,
-    minUnit: PropTypes.string.isRequired,
-    timeSteps: PropTypes.object.isRequired,
-    height: PropTypes.number.isRequired,
-    verticalLineClassNamesForTime: PropTypes.func
-  }
+export function columns(
+  canvasTimeStart,
+  canvasTimeEnd,
+  canvasWidth,
+  minUnit,
+  timeSteps,
+  height,
+  verticalLineClassNamesForTime
+  ) { 
 
-  shouldComponentUpdate(nextProps) {
-    return !(
-      nextProps.canvasTimeStart === this.props.canvasTimeStart &&
-      nextProps.canvasTimeEnd === this.props.canvasTimeEnd &&
-      nextProps.canvasWidth === this.props.canvasWidth &&
-      nextProps.lineCount === this.props.lineCount &&
-      nextProps.minUnit === this.props.minUnit &&
-      nextProps.timeSteps === this.props.timeSteps &&
-      nextProps.height === this.props.height &&
-      nextProps.verticalLineClassNamesForTime ===
-        this.props.verticalLineClassNamesForTime
-    )
-  }
-
-  render() {
-    const {
-      canvasTimeStart,
-      canvasTimeEnd,
-      canvasWidth,
-      minUnit,
-      timeSteps,
-      height,
-      verticalLineClassNamesForTime
-    } = this.props
     const ratio = canvasWidth / (canvasTimeEnd - canvasTimeStart)
 
     let lines = []
@@ -75,21 +46,36 @@ export default class Columns extends Component {
           classNamesForTime.join(' ')
 
         lines.push(
-          <div
-            key={`line-${time.valueOf()}`}
-            className={classNames}
-            style={{
-              pointerEvents: 'none',
-              top: '0px',
-              left: `${left + leftPush}px`,
-              width: `${labelWidth}px`,
-              height: `${height}px`
-            }}
-          />
+          { 
+            isColumns: true,
+            key: "line-" + time.valueOf(),
+            className: classNames,
+            style: {
+              pointerEvents: 'none'
+            },
+            top: 0,
+            left: left + leftPush,
+            width: labelWidth,
+            height: height
+          }
         )
       }
     )
 
-    return <div className="rct-vertical-lines">{lines}</div>
-  }
+    // return <div className="rct-vertical-lines">{lines}</div>
+
+    return lines;
 }
+
+
+{/* <div
+key={`line-${time.valueOf()}`}
+className={classNames}
+style={{
+  pointerEvents: 'none',
+  top: '0px',
+  left: `${left + leftPush}px`,
+  width: `${labelWidth}px`,
+  height: `${height}px`
+}}
+/> */}

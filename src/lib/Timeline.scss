@@ -110,7 +110,7 @@ $weekend: rgba(250, 246, 225, 0.5);
 
   // TODO: rename or remove once we make breaking change to rename vertical lines
   // to columns
-  .rct-vertical-lines {
+  // .rct-vertical-lines {
     .rct-vl {
       position: absolute;
       border-left: 1px solid $border-color;
@@ -123,9 +123,9 @@ $weekend: rgba(250, 246, 225, 0.5);
         background: $weekend;
       }
     }
-  }
+  // }
 
-  .rct-horizontal-lines {
+  // .rct-horizontal-lines {
     .rct-hl-even,
     .rct-hl-odd {
       border-bottom: $border-width solid $border-color;
@@ -138,7 +138,7 @@ $weekend: rgba(250, 246, 225, 0.5);
     .rct-hl-even {
       background: $row-background-even;
     }
-  }
+  // }
 
   .rct-cursor-line {
     position: absolute;

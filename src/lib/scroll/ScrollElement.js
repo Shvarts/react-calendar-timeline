@@ -4,7 +4,7 @@ import { getParentPosition } from '../utility/dom-helpers'
 
 class ScrollElement extends PureComponent {
   static propTypes = {
-    children: PropTypes.element.isRequired,
+    // children: PropTypes.element.isRequired,
     width: PropTypes.number.isRequired,
     height: PropTypes.number.isRequired,
     traditionalZoom: PropTypes.bool.isRequired,
@@ -192,8 +192,6 @@ class ScrollElement extends PureComponent {
         data-testid="scroll-element"
         className="rct-scroll"
         style={scrollComponentStyle}
-        onScroll={this.handleScroll}
-        onWheel={this.handleWheel}
         onMouseDown={this.handleMouseDown}
         onMouseMove={this.handleMouseMove}
         onMouseUp={this.handleMouseUp}
@@ -210,3 +208,5 @@ class ScrollElement extends PureComponent {
 }
 
 export default ScrollElement
+// onScroll={this.handleScroll}
+// onWheel={this.handleWheel}

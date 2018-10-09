@@ -795,7 +795,9 @@ export default class ReactCalendarTimeline extends Component {
     groupHeights,
     groupTops,
     width,
-    height
+    height,
+    timeSteps,
+    groups
   ) {
 
     return (
@@ -829,6 +831,19 @@ export default class ReactCalendarTimeline extends Component {
         selected={this.props.selected}
         width={width}
         height={height}
+        minUnit={minUnit}
+        timeSteps={timeSteps}
+        verticalLineClassNamesForTime={this.props.verticalLineClassNamesForTime}
+        groupHeights={groupHeights}
+        groups={groups}
+        lineCount={_length(this.props.groups)}
+        clickTolerance={this.props.clickTolerance}
+        onRowClick={this.handleRowClick}
+        onRowDoubleClick={this.handleRowDoubleClick}
+        horizontalLineClassNamesForGroup={
+          this.props.horizontalLineClassNamesForGroup
+        }
+        onRowContextClick={this.handleScrollContextMenu}
       />
     )
   }
@@ -1053,6 +1068,8 @@ export default class ReactCalendarTimeline extends Component {
               <div style={outerComponentStyle} className="rct-outer" >
                 {sidebarWidth > 0 ? this.sidebar(height, groupHeights) : null}
 
+                        
+
                         <ScrollElement
                           scrollRef={this.getScrollElementRef}
                           width={width}
@@ -1074,11 +1091,13 @@ export default class ReactCalendarTimeline extends Component {
                             groupHeights,
                             groupTops,
                             width,
-                            height
+                            height,
+                            timeSteps,
+                            groups
                           )}
                                 
                           <MarkerCanvas>
-                            {this.columns(
+                            {/* {this.columns(
                               canvasTimeStart,
                               canvasTimeEnd,
                               canvasWidth,
@@ -1086,8 +1105,8 @@ export default class ReactCalendarTimeline extends Component {
                               timeSteps,
                               height,
                               headerHeight
-                            )}
-                            {this.rows(canvasWidth, groupHeights, groups)}
+                            )} */}
+                            {/* {this.rows(canvasWidth, groupHeights, groups)} */}
 
                             {this.infoLabel()}
                             {this.childrenWithProps(

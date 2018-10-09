@@ -4,6 +4,9 @@ import { Collection } from 'react-virtualized';
 import { _get, arraysEqual, keyBy } from '../utility/generic';
 import Item from './Item'
 import { getGroupOrders, getVisibleItems } from '../utility/calendar'
+import { columns } from '../columns/Columns'
+import { groupRows } from '../row/GroupRows'
+import GroupRow from '../row/GroupRow'
 
 const canResizeLeft = (item, canResize) => {
     const value =
@@ -101,15 +104,6 @@ export default class ItemsCollection extends Component {
 
         return getVisibleItems(items, canvasTimeStart, canvasTimeEnd, keys)
     }
-
-    // getVisibleItemsByGroupTop() {
-    //     const { items, groupTops, groups } = this.props
-    //     let groupsInViewPort = []
-
-    //     groupTops.forEach((top, index) => {
-    //         if (top < window.innerHeight)
-    //     });
-    // }
     
     render() {
         const {
@@ -118,7 +112,18 @@ export default class ItemsCollection extends Component {
             dimensionItems,
             height,
             width,
-            canvasWidth
+            canvasWidth,
+            timeSteps,
+            minUnit,
+            verticalLineClassNamesForTime,
+            lineCount,
+            groupHeights,
+            onRowClick, 
+            onRowDoubleClick, 
+            clickTolerance, 
+            groups, 
+            horizontalLineClassNamesForGroup, 
+            onRowContextClick
           } = this.props
           const { itemIdKey, itemGroupKey } = this.props.keys
           const groupOrders = this.getGroupOrders()
@@ -127,68 +132,95 @@ export default class ItemsCollection extends Component {
             canvasTimeEnd,
             groupOrders
           )
+        const columnsList = columns(canvasTimeStart, canvasTimeEnd, canvasWidth, minUnit, timeSteps, height, verticalLineClassNamesForTime);
+        const groupRowsList = groupRows(canvasWidth, lineCount, groupHeights, onRowClick, onRowDoubleClick, clickTolerance, groups, horizontalLineClassNamesForGroup, onRowContextClick);
 
-        const sortedDimensionItems = keyBy(dimensionItems, 'id')
-        // const viewPortItems = visibleItems.filter(item => {
-        //     const dimensions = item && sortedDimensionItems[_get(item, itemIdKey)] && sortedDimensionItems[_get(item, itemIdKey)].dimensions
-        //     return dimensions && dimensions.top > window.scrollY && dimensions.top < window.scrollY + window.innerHeight;
-        // });
+        let visibleItemsNew = columnsList.concat(visibleItems);
+        let dimensionItemsNew = columnsList.concat(dimensionItems);
+        visibleItemsNew = visibleItemsNew.concat(groupRowsList);
+        dimensionItemsNew = dimensionItemsNew.concat(groupRowsList);
+
+        const sortedDimensionItems = keyBy(dimensionItemsNew, 'id')
+
         const cellRenderer = ({ index, key, style }) => {
-            const item = visibleItems[index];
-        
-            return (
-                item && sortedDimensionItems[_get(item, itemIdKey)] &&
-                    <Item
+            const item = visibleItemsNew[index];
+            
+            if (item && item.isGroupRow) {
+                return (
+                    <GroupRow
                         key={key}
+                        order={item.order}
+                        clickTolerance={item.clickTolerance}
+                        onContextMenu={item.onContextMenu}
+                        onClick={item.onClick}
+                        onDoubleClick={item.onDoubleClick}
+                        key={item.key}
+                        isEvenRow={item.isEvenRow}
+                        group={item.group}
+                        horizontalLineClassNamesForGroup={item.horizontalLineClassNamesForGroup}
                         style={style}
-                        item={item}
-                        keys={this.props.keys}
-                        order={groupOrders[dimensionItems[index].dimensions.order]}
-                        dimensions={
-                            sortedDimensionItems[_get(item, itemIdKey)].dimensions
-                        }
-                        selected={this.isSelected(item, itemIdKey)}
-                        canChangeGroup={
-                        _get(item, 'canChangeGroup') !== undefined
-                            ? _get(item, 'canChangeGroup')
-                            : this.props.canChangeGroup
-                        }
-                        canMove={
-                        _get(item, 'canMove') !== undefined
-                            ? _get(item, 'canMove')
-                            : this.props.canMove
-                        }
-                        canResizeLeft={canResizeLeft(item, this.props.canResize)}
-                        canResizeRight={canResizeRight(item, this.props.canResize)}
-                        canSelect={
-                            _get(item, 'canSelect') !== undefined
-                                ? _get(item, 'canSelect')
-                                : this.props.canSelect
+                    />);
+            } else if (item && item.isColumns) {
+                return (<div
+                    key={key}
+                    className={item.className}
+                    style={style}
+                />);
+            } else {
+                return (
+                    item && sortedDimensionItems[_get(item, itemIdKey)] &&
+                        <Item
+                            key={key}
+                            style={style}
+                            item={item}
+                            keys={this.props.keys}
+                            order={groupOrders[dimensionItemsNew[index].dimensions.order]}
+                            dimensions={
+                                sortedDimensionItems[_get(item, itemIdKey)].dimensions
                             }
-                            useResizeHandle={this.props.useResizeHandle}
-                            topOffset={this.props.topOffset}
-                            groupTops={this.props.groupTops}
-                            canvasTimeStart={this.props.canvasTimeStart}
-                            canvasTimeEnd={this.props.canvasTimeEnd}
-                            canvasWidth={this.props.canvasWidth}
-                            dragSnap={this.props.dragSnap}
-                            minResizeWidth={this.props.minResizeWidth}
-                            onResizing={this.props.itemResizing}
-                            onResized={this.props.itemResized}
-                            moveResizeValidator={this.props.moveResizeValidator}
-                            onDrag={this.props.itemDrag}
-                            onDrop={this.props.itemDrop}
-                            onItemDoubleClick={this.props.onItemDoubleClick}
-                            onContextMenu={this.props.onItemContextMenu}
-                            onSelect={this.props.itemSelect}
-                            itemRenderer={this.props.itemRenderer}
-                        />
-                )
+                            selected={this.isSelected(item, itemIdKey)}
+                            canChangeGroup={
+                            _get(item, 'canChangeGroup') !== undefined
+                                ? _get(item, 'canChangeGroup')
+                                : this.props.canChangeGroup
+                            }
+                            canMove={
+                            _get(item, 'canMove') !== undefined
+                                ? _get(item, 'canMove')
+                                : this.props.canMove
+                            }
+                            canResizeLeft={canResizeLeft(item, this.props.canResize)}
+                            canResizeRight={canResizeRight(item, this.props.canResize)}
+                            canSelect={
+                                _get(item, 'canSelect') !== undefined
+                                    ? _get(item, 'canSelect')
+                                    : this.props.canSelect
+                                }
+                                useResizeHandle={this.props.useResizeHandle}
+                                topOffset={this.props.topOffset}
+                                groupTops={this.props.groupTops}
+                                canvasTimeStart={this.props.canvasTimeStart}
+                                canvasTimeEnd={this.props.canvasTimeEnd}
+                                canvasWidth={this.props.canvasWidth}
+                                dragSnap={this.props.dragSnap}
+                                minResizeWidth={this.props.minResizeWidth}
+                                onResizing={this.props.itemResizing}
+                                onResized={this.props.itemResized}
+                                moveResizeValidator={this.props.moveResizeValidator}
+                                onDrag={this.props.itemDrag}
+                                onDrop={this.props.itemDrop}
+                                onItemDoubleClick={this.props.onItemDoubleClick}
+                                onContextMenu={this.props.onItemContextMenu}
+                                onSelect={this.props.itemSelect}
+                                itemRenderer={this.props.itemRenderer}
+                            />
+                    )
+                }
         }
         
         const cellSizeAndPositionGetter = ({ index }) => {
-            const datum = dimensionItems[index].dimensions
-            
+            const datum = dimensionItemsNew[index].dimensions || dimensionItemsNew[index]
+
             return {
                 height: datum.height,
                 width: datum.width,
@@ -199,10 +231,10 @@ export default class ItemsCollection extends Component {
 
         return (
             <Collection
-                cellCount={dimensionItems.length}
+                cellCount={dimensionItemsNew.length}
                 cellRenderer={cellRenderer}
                 cellSizeAndPositionGetter={cellSizeAndPositionGetter}
-                height={height}
+                height={window.innerHeight}
                 width={canvasWidth}
                 horizontalOverscanSize={10}
                 verticalOverscanSize={1}

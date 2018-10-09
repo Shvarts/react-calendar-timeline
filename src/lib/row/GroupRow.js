@@ -12,9 +12,6 @@ class GroupRow extends PureComponent {
     group: PropTypes.object.isRequired,
     horizontalLineClassNamesForGroup: PropTypes.func,
     order: PropTypes.number.isRequired,
-    canvasWidth: PropTypes.number.isRequired,
-    height: PropTypes.number.isRequired,
-
   }
 
   onGroupRowContextMenuClick = evt => this.props.onContextMenu(evt, this.props.order);
@@ -29,8 +26,7 @@ class GroupRow extends PureComponent {
       clickTolerance,
       horizontalLineClassNamesForGroup,
       group,
-      canvasWidth,
-      height,
+      style
     } = this.props
 
     let classNamesForGroup = [];
@@ -44,10 +40,7 @@ class GroupRow extends PureComponent {
           onContextMenu={this.onGroupRowContextMenuClick}
           onDoubleClick={this.onGroupRowDoubleClick}
           className={(isEvenRow ? 'rct-hl-even ' : 'rct-hl-odd ') + (classNamesForGroup ? classNamesForGroup.join(' ') : '')}
-          style={{
-            width: canvasWidth,
-            height: height - 1
-          }}
+          style={style}
         />
       </PreventClickOnDrag>
     )

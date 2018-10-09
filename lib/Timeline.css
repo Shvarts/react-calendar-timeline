@@ -14,6 +14,8 @@
   overflow-y: hidden;
   -ms-touch-action: none;
   touch-action: none; }
+  .react-calendar-timeline .rct-scroll .ReactVirtualized__Collection {
+    z-index: 10; }
 
 .react-calendar-timeline .rct-item:hover {
   z-index: 88; }
